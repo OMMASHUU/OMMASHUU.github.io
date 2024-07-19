@@ -80,12 +80,13 @@
       }
 
       const apiToken = '1b274df623928c80d9a8ac8fda6e22557c6dec0d226487e425e546b9'; // 替换为实际的 Tushare API Token
-      const url = `https://api.tushare.pro?api_token=${apiToken}&symbol=${symbol}`;
+      const url = 'https://api.tushare.pro';
 
       fetch(url, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${apiToken}` // 添加认证头部
         },
         body: JSON.stringify({
           api_name: 'stock_basic',

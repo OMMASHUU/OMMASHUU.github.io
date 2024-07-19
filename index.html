@@ -66,7 +66,7 @@
 <body>
   <div class="container">
     <h1>A股数据提取</h1>
-    <input type="text" id="stockSymbol" placeholder="输入股票代码 (例如 000001)">
+    <input type="text" id="stockSymbol" placeholder="输入股票代码 (例如 000001.SZ)">
     <button id="fetchButton">获取数据</button>
     <pre id="result"></pre>
   </div>
@@ -79,33 +79,36 @@
         return;
       }
 
-      // 新浪财经 API
-      const url = `https://hq.sinajs.cn/list=${symbol}`;
+      const apiToken = 'YOUR_TUSHARE_API_TOKEN'; // 替换为实际的 Tushare API Token
+      const url = `https://api.tushare.pro?api_token=${apiToken}&symbol=${symbol}`;
 
-      fetch(url)
-        .then(response => response.text())
-        .then(data => {
-          // 数据处理
-          const result = parseSinaData(data);
-          document.getElementById('result').textContent = result;
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          api_name: 'stock_basic',
+          token: apiToken,
+          params: {
+            ts_code: symbol,
+            fields: 'ts_code,symbol,name'
+          }
         })
-        .catch(error => {
-          console.error('获取数据失败:', error);
-          document.getElementById('result').textContent = '获取数据失败。';
-        });
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error_code) {
+          document.getElementById('result').textContent = `错误: ${data.error_code}`;
+        } else {
+          document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        }
+      })
+      .catch(error => {
+        console.error('获取数据失败:', error);
+        document.getElementById('result').textContent = '获取数据失败。';
+      });
     });
-
-    function parseSinaData(data) {
-      // 新浪财经数据格式处理
-      const pattern = /var\s+([A-Z0-9_]+)\s*=\s*"(.+)";/;
-      const match = data.match(pattern);
-      if (match) {
-        const [ , stockName, stockData ] = match;
-        return `股票代码: ${stockName}\n数据: ${stockData}`;
-      } else {
-        return '数据格式错误或股票代码无效。';
-      }
-    }
   </script>
 </body>
 </html>

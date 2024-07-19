@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OCR Web App</title>
+  <title>中文 OCR 网页应用</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,10 +34,10 @@
 </head>
 <body>
   <div class="container">
-    <h1>OCR Web App</h1>
+    <h1>中文 OCR 网页应用</h1>
     <input type="file" id="imageInput" accept="image/*">
     <img id="preview" src="" alt="Image Preview">
-    <button id="recognizeButton">Recognize Text</button>
+    <button id="recognizeButton">识别文字</button>
     <pre id="result"></pre>
   </div>
 
@@ -57,13 +57,13 @@
     document.getElementById('recognizeButton').addEventListener('click', function() {
       const image = document.getElementById('preview').src;
       if (!image) {
-        alert('Please choose an image first.');
+        alert('请先选择一张图片。');
         return;
       }
 
       Tesseract.recognize(
         image,
-        'eng',
+        'chi_sim', // 使用简体中文语言包
         {
           logger: function(m) {
             console.log(m);
@@ -73,7 +73,7 @@
         document.getElementById('result').textContent = text;
       }).catch(function(err) {
         console.error(err);
-        alert('OCR failed.');
+        alert('文字识别失败。');
       });
     });
   </script>
